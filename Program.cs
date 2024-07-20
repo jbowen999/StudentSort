@@ -4,12 +4,14 @@
     {
         static void Main(string[] args)
         {
-            Student julian = new Student("Julian", 4.0);
-            Student robert = new Student("Robert", 3.3);
-            Student yuselmi = new Student("Yuselmi", 3.9);
-            Student shay = new Student("Shay", 1.5);
-            Student matt = new Student("Matt", 3.7);
-            Student lee = new Student("Lee", 0.8);
+            string algo = ""; // Used during final print
+
+            Student julian = new Student("Jack", 4.0);
+            Student robert = new Student("Jill", 3.3);
+            Student yuselmi = new Student("Mac", 3.9);
+            Student shay = new Student("Adam", 1.5);
+            Student matt = new Student("Kait", 3.7);
+            Student lee = new Student("Diana", 0.8);
 
             Student[] students = { julian, robert, yuselmi, shay, matt, lee };
 
@@ -17,31 +19,42 @@
             Console.WriteLine("1: Bubble Sort");
             Console.WriteLine("2: Selection Sort");
             Console.WriteLine("3: Insertion Sort");
+            Console.WriteLine("4: Merge Sort");
 
-            string? userSelection = Console.ReadLine();
 
-            switch (userSelection)
+            string? userSelection = Console.ReadLine(); // Allows for user input 
+
+            switch (userSelection) // Conditional logic changes "algo" and calls the appropriate method
             {
                 case "1":
+                    algo = "Bubble Sort";
                     BubbleSort(students);
                     break;
                 case "2":
+                    algo = "Selection Sort";
                     SelectionSort(students);
                     break;
                 case "3":
+                    algo = "Insertion Sort";
                     InsertionSort(students);
+                    break;
+                case "4":
+                    algo = "Merge Sort";
+                    MergeSort(students);
                     break;
                 default:
                     // none of these cases match
                     break;
 
             }
-            PrintArray(students);
+            PrintArray(students, algo);
 
         }
 
-        public static void PrintArray(Student[] arr)
+        public static void PrintArray(Student[] arr, string algo)
         {
+            Console.WriteLine($"Students sorted by GPA ({algo})");
+
             foreach (var item in arr)
             {
                 Console.WriteLine($"{item.name}: {item.gpa} ");
@@ -65,7 +78,6 @@
                     }
                 }
             }
-            Console.WriteLine("Students sorted by GPA (Bubble Sort)");
 
         }
 
@@ -73,7 +85,7 @@
         {
             // minIndex keeps track of the smallest index in each iteration  
             // temp is used as temporary storage  
-            int minIndex; 
+            int minIndex;
             Student temp;
 
             // O(n) how many times we need to go though the unsorted array  
@@ -96,7 +108,6 @@
                 arrToSort[i] = arrToSort[minIndex];
                 arrToSort[minIndex] = temp;
             }
-            Console.WriteLine("Students sorted by GPA (Selection Sort)");
 
         }
 
@@ -118,7 +129,82 @@
                 // need an assignment
                 arr[priorIndex + 1] = temp;
             }
-            Console.WriteLine("Students sorted by GPA (Insertion Sort)");
         }
+
+
+        public static void MergeSort(Student[] arr)
+        {
+            // Base case: if the array has 1 or fewer elements, it is already sorted
+            if (arr.Length <= 1) return;
+
+            // Find the midpoint of the array
+            int mid = arr.Length / 2;
+
+            // Create subarrays for the left and right halves
+            Student[] leftSubArr = new Student[mid];
+            Student[] rightSubArr = new Student[arr.Length - mid];
+
+            // Copy elements to the left subarray
+            for (int i = 0; i < mid; i++)
+            {
+                leftSubArr[i] = arr[i];
+            }
+
+            // Copy elements to the right subarray
+            for (int i = mid; i < arr.Length; i++)
+            {
+                rightSubArr[i - mid] = arr[i];
+            }
+
+            // Recursively sort the subarrays
+            MergeSort(leftSubArr);
+            MergeSort(rightSubArr);
+
+            Merge(arr, leftSubArr, rightSubArr); // Merge the sorted subarrays
+
+
+        }
+
+        // Merges two subarrays of arr[].
+        static void Merge(Student[] arr, Student[] left, Student[] right)
+        {
+            int i = 0, j = 0, k = 0;
+
+            // Merge elements from left and right subarrays in descending order
+
+            while (i < left.Length && j < right.Length)
+            {
+                if (left[i].gpa >= right[j].gpa)
+                {
+                    arr[k] = left[i];
+                    i++;
+                }
+                else
+                {
+                    arr[k] = right[j];
+                    j++;
+                }
+                k++;
+            }
+
+
+            // Copy any remaining elements from the left subarray
+            while (i < left.Length)
+            {
+                arr[k] = left[i];
+                i++;
+                k++;
+            }
+
+
+            // Copy any remaining elements from the right subarray
+            while (j < right.Length)
+            {
+                arr[k] = right[j];
+                j++;
+                k++;
+            }
+        }
+
     }
 }
